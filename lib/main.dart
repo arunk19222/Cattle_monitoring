@@ -29,6 +29,7 @@ class _Splash_screenState extends State<Splash_screen>
         ..repeat(reverse: true);
   late final Animation<double> animation =
       CurvedAnimation(parent: controller, curve: Curves.easeIn);
+  late int size,arun,sd;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
