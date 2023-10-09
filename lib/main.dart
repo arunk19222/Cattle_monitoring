@@ -31,8 +31,9 @@ class _Splash_screenState extends State<Splash_screen>
       CurvedAnimation(parent: controller, curve: Curves.easeIn);
   @override
   Widget build(BuildContext context) {
+    int size = 0;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
