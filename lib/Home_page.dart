@@ -311,7 +311,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-print("Sds");
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
