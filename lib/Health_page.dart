@@ -78,8 +78,7 @@ class _health_pageState extends State<health_page>
                             builder: (context) {
                               return FutureBuilder(
                                 builder: (context, snap) {
-                                  return bottomsheet(
-                                      context, _animationController, snap.data);
+                                  return bottom_sheet_class(context: context, animate_controller: _animationController, map: snap.data);
                                 },
                                 future: get_cow_data(
                                     snapshot.requireData.docs[index].id),
