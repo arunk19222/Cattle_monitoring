@@ -141,14 +141,13 @@ class _bottom_sheet_classState extends State<bottom_sheet_class> {
                 animation: widget.animate_controller,
                 builder: (BuildContext context, Widget? child) {
                   return GestureDetector(
-                    onLongPress:(){
-                      setState(() {
-                        flag = false;
-                      });
-                    },
                     onTap:(){
                       setState(() {
-                        flag = true;
+                        if(flag){
+                          flag = false;
+                        }else{
+                          flag = true;
+                        }
                       });
                     },
                     child: CircleAvatar(
