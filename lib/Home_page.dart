@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,12 +11,19 @@ import 'package:flutter_veltech_project/Helpline_Page.dart';
 import 'package:flutter_veltech_project/Location_page.dart';
 import 'package:flutter_veltech_project/bottomsheet.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+
 class graph_data{
   final x;
   final y;
   graph_data({required this.x,required this.y}){
   }
 
+}
+class pie_data{
+  final String x;
+  final int y;
+  late Color color;
+  pie_data(this.x,this.y,this.color){}
 }
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -33,17 +41,27 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   int index = 0;
   late bool is_graph ;
   late ChartSeriesController? _chartSeriesController;
-  List<graph_data> datas = [
-    graph_data(x: 1, y: 10),
-    graph_data(x: 2, y: 20),
-    graph_data(x: 3, y: 30),
-    graph_data(x: 4, y: 30),
-    graph_data(x: 5, y: 50),
-    graph_data(x: 7, y: 0),
-  ];
 
+
+  late List<graph_data> graph_datas;
+  late List<pie_data>  pie_datas;
   @override
   void initState() {
+    graph_datas = [
+      graph_data(x: 1, y: 10),
+      graph_data(x: 2, y: 20),
+      graph_data(x: 3, y: 30),
+      graph_data(x: 4, y: 30),
+      graph_data(x: 5, y: 50),
+      graph_data(x: 7, y: 0),
+    ];
+    pie_datas = [
+      pie_data("Temperature",50, Colors.deepOrangeAccent),
+      pie_data("Heart Rate",40, Colors.pink),
+      pie_data("Respiration Rate",70,Color(0xfD8CBC8)),
+      pie_data("Blood Pressure",51,Colors.red)
+    ];
+
     is_graph= true;
     search_controller.text = "";
     _animationController =
@@ -285,11 +303,35 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                   _chartSeriesController?.animate();
                                 });
                               }
-                                  ,animationDuration:3000,name:"Milk Productions",dataSource: datas, xValueMapper:(graph_data data,_)=>data.x, yValueMapper: (graph_data data,_)=>data.y,
+                                  ,animationDuration:3000,name:"Milk Productions",dataSource: graph_datas, xValueMapper:(graph_data data,_)=>data.x, yValueMapper: (graph_data data,_)=>data.y,
                                   gradient:LinearGradient(colors: [Color(0xff383741),Color(0xff837b7b),Color(0xffc4d3d6)],begin:Alignment.bottomLeft,end: Alignment.bottomRight)),
 
                             ],
-                          ):Container(),
+                          ):SfCircularChart(
+                            legend: Legend(
+                                isVisible: true,overflowMode: LegendItemOverflowMode.wrap,position: LegendPosition.bottom,
+                            textStyle: TextStyle(color: Colors.white)),
+                              series: <CircularSeries>[
+                                // Render pie chart
+                                PieSeries<pie_data, String>(
+                                    dataSource: pie_datas,
+                                    explode:true,
+                                    pointColorMapper:(pie_data data,_) => data.color,
+                                    xValueMapper: (pie_data data, _) => data.x,
+                                    yValueMapper: (pie_data data, _) => data.y,
+                                    radius:'75%',
+                                    dataLabelSettings: DataLabelSettings(
+                                        isVisible: true,
+                                        // Avoid labels intersection
+                                        useSeriesColor: true,
+                                        labelIntersectAction: LabelIntersectAction.shift,
+                                        labelPosition: ChartDataLabelPosition.outside,
+                                        connectorLineSettings: ConnectorLineSettings(
+                                            type: ConnectorType.curve, length: '25%',color: Colors.white)
+                                    )
+                                )
+                              ],
+                          ),
                             GestureDetector(
                               onTap: (){
                                 if(is_graph){
@@ -341,6 +383,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
