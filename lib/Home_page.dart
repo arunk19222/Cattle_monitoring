@@ -31,6 +31,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   Map<String, dynamic>? cloud_datas;
   late Widget current_scaffold_body_widget;
   int index = 0;
+  late bool is_graph ;
   late ChartSeriesController? _chartSeriesController;
   List<graph_data> datas = [
     graph_data(x: 1, y: 10),
@@ -43,6 +44,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
+    is_graph= true;
     search_controller.text = "";
     _animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 3));
@@ -244,48 +246,77 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         ),
                         width:500,
                         height:600,
-                        child: SfCartesianChart(
-                          borderColor: Colors.transparent,
-                          borderWidth: 0,
-                          zoomPanBehavior: ZoomPanBehavior(enablePinching: true,maximumZoomLevel:0.6,enableDoubleTapZooming: true,enablePanning:true),
-                          plotAreaBorderWidth:0,
-                          tooltipBehavior: TooltipBehavior(enable: true),
-                          primaryXAxis: CategoryAxis(
+                        child: Stack(
+                          children: [is_graph?SfCartesianChart(
+                            borderColor: Colors.transparent,
+                            borderWidth: 0,
+                            zoomPanBehavior: ZoomPanBehavior(enablePinching: true,maximumZoomLevel:0.6,enableDoubleTapZooming: true,enablePanning:true),
+                            plotAreaBorderWidth:0,
+                            tooltipBehavior: TooltipBehavior(enable: true),
+                            primaryXAxis: CategoryAxis(
+                                labelStyle:TextStyle(color: Colors.white70),
+
+                                isVisible: true, majorGridLines: MajorGridLines(width:0),minimum:0,
+                                borderWidth: 0,
+                                interval: 1
+                            ),
+                            primaryYAxis: CategoryAxis(
+                              title: AxisTitle(text: "Litres/Week",textStyle: TextStyle(
+                                  color: Colors.white,letterSpacing: 1
+                              )),
                               labelStyle:TextStyle(color: Colors.white70),
+                              majorGridLines: MajorGridLines(width:0),
+                              minimum:0,
+                              maximum: 80,
+                              isVisible: true,
+                              interval: 5,
+                            ),
+                            legend: Legend(isVisible: true,backgroundColor: Colors.white,textStyle: TextStyle(color: Colors.black,fontSize:20)),
+                            series: <ChartSeries<graph_data,int>>[
 
-                              isVisible: true, majorGridLines: MajorGridLines(width:0),minimum:0,
-                              borderWidth: 0,
-                              interval: 1
-                          ),
-                          primaryYAxis: CategoryAxis(
-                            title: AxisTitle(text: "Litres/Week",textStyle: TextStyle(
-                                color: Colors.white,letterSpacing: 1
-                            )),
-                            labelStyle:TextStyle(color: Colors.white70),
-                            majorGridLines: MajorGridLines(width:0),
-                            minimum:0,
-                            maximum: 80,
-                            isVisible: true,
-                            interval: 5,
-                          ),
-                          legend: Legend(isVisible: true,backgroundColor: Colors.white,textStyle: TextStyle(color: Colors.black,fontSize:20)),
-                          series: <ChartSeries<graph_data,int>>[
+                              SplineAreaSeries(markerSettings: MarkerSettings(
+                                  isVisible: true,
+                                  color: Colors.black,
+                                  borderWidth:0.5,
+                                  shape: DataMarkerType.circle,
+                                  borderColor: Colors.white70),onRendererCreated: (ChartSeriesController? controller){
+                                _chartSeriesController = controller;
+                                Future.delayed(Duration(seconds:0),(){
+                                  _chartSeriesController?.animate();
+                                });
+                              }
+                                  ,animationDuration:3000,name:"Milk Productions",dataSource: datas, xValueMapper:(graph_data data,_)=>data.x, yValueMapper: (graph_data data,_)=>data.y,
+                                  gradient:LinearGradient(colors: [Color(0xff383741),Color(0xff837b7b),Color(0xffc4d3d6)],begin:Alignment.bottomLeft,end: Alignment.bottomRight)),
 
-                            SplineAreaSeries(markerSettings: MarkerSettings(
-                                isVisible: true,
-                                color: Colors.black,
-                                borderWidth:0.5,
-                                shape: DataMarkerType.circle,
-                                borderColor: Colors.white70),onRendererCreated: (ChartSeriesController? controller){
-                              _chartSeriesController = controller;
-                              Future.delayed(Duration(seconds:0),(){
-                                _chartSeriesController?.animate();
-                              });
-                            }
-                                ,animationDuration:3000,name:"Milk Productions",dataSource: datas, xValueMapper:(graph_data data,_)=>data.x, yValueMapper: (graph_data data,_)=>data.y,
-                                gradient:LinearGradient(colors: [Color(0xff383741),Color(0xff837b7b),Color(0xffc4d3d6)],begin:Alignment.bottomLeft,end: Alignment.bottomRight)),
-
-                          ],
+                            ],
+                          ):Container(),
+                            GestureDetector(
+                              onTap: (){
+                                if(is_graph){
+                                  setState(() {
+                                    is_graph=false;
+                                  });
+                                }else{
+                                  setState(() {
+                                    is_graph=true;
+                                  });
+                                }
+                              },
+                              child:Padding(
+                                padding: const EdgeInsets.only(top:15,right: 20),
+                                child: Align(
+                                  alignment: Alignment.topRight,
+                                  child: Container(
+                                    width:40,height:40,
+                                    decoration: BoxDecoration(
+                                      color: Colors.black,
+                                      borderRadius: BorderRadius.all(Radius.circular(50)),
+                                      boxShadow: [BoxShadow(color: Colors.white,spreadRadius:1,blurRadius:2,offset:Offset(0,2))]
+                                    ),
+                                      child: Icon(is_graph?Icons.pie_chart:Icons.area_chart,size:40,color: Colors.white,)),
+                                ),
+                              ),
+                            )],
                         ),
                       ),
                     ),
