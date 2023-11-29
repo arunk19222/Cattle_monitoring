@@ -1,6 +1,4 @@
-import 'dart:math';
 import 'dart:ui';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,6 +31,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
+  late Stream<QuerySnapshot> whole_database;
   TextEditingController search_controller = TextEditingController();
   var temp_f = false, blood_f = false, heart_f = false, air_f = false;
   late AnimationController _animationController;
@@ -41,12 +40,37 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   int index = 0;
   late bool is_graph ;
   late ChartSeriesController? _chartSeriesController;
-
-
   late List<graph_data> graph_datas;
   late List<pie_data>  pie_datas;
+   Map<String,int> classify_no_of_datas =  {"temp":0,"heart_beat":0,"location":0,
+     "blood_pressure":0,"respiration_rate":0};
+  void classifying_datas(){
+    FirebaseFirestore.instance.collection('temp').snapshots().forEach((element) { //Its always active like a listener if any changes made in firebase firestore even if the respection function called already.
+      classify_no_of_datas =  {"temp":0,"heart_beat":0,"location":0,
+        "blood_pressure":0,"respiration_rate":0};
+      element.docs.forEach((element) {
+        dynamic datas = element.data();
+        if((datas['temp'] < 200 && datas['temp'] >= 120)){
+          classify_no_of_datas["temp"] = classify_no_of_datas["temp"]!+1;
+        }
+        if((datas['blood_pressure'] < 200 && datas['blood_pressure'] >= 181)){
+          classify_no_of_datas["blood_pressure"] = classify_no_of_datas["blood_pressure"]!+1;
+        }
+        if((datas['heart_beat'] < 130 && datas['heart_beat'] >= 70) ){
+          classify_no_of_datas["heart_beat"] = classify_no_of_datas["heart_beat"]!+1;
+        }
+        if((datas['respiration_rate'] < 210 && datas['respiration_rate'] >= 60)){
+          classify_no_of_datas["respiration_rate"] = classify_no_of_datas["respiration_rate"]!+1;
+        }
+
+      });
+    });
+
+  }
   @override
-  void initState() {
+  void initState(){
+    classifying_datas();
+
     graph_datas = [
       graph_data(x: 1, y: 10),
       graph_data(x: 2, y: 20),
@@ -55,12 +79,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       graph_data(x: 5, y: 50),
       graph_data(x: 7, y: 0),
     ];
-    pie_datas = [
-      pie_data("Temperature",50, Colors.deepOrangeAccent),
-      pie_data("Heart Rate",40, Colors.pink),
-      pie_data("Respiration Rate",70,Color(0xfD8CBC8)),
-      pie_data("Blood Pressure",51,Colors.red)
-    ];
+
 
     is_graph= true;
     search_controller.text = "";
@@ -91,6 +110,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     height: 500,
   );
   void filter_temp(var value) {
+
     if (value) {
       setState(() {
         search_controller.text = "";
@@ -153,6 +173,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   }
 
   void filter_heart(var value) {
+
     if (value) {
       setState(() {
         search_controller.text = "";
@@ -327,7 +348,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                         labelIntersectAction: LabelIntersectAction.shift,
                                         labelPosition: ChartDataLabelPosition.outside,
                                         connectorLineSettings: ConnectorLineSettings(
-                                            type: ConnectorType.curve, length: '25%',color: Colors.white)
+                                            type: ConnectorType.curve, length: '20%',color: Colors.white)
                                     )
                                 )
                               ],
@@ -383,6 +404,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    pie_datas = [
+      pie_data("Temperature",classify_no_of_datas["temp"]!, Colors.deepOrangeAccent),
+      pie_data("Heart Rate",classify_no_of_datas["heart_beat"]!, Colors.pink),
+      pie_data("Respiration Rate",classify_no_of_datas["respiration_rate"]!,Color(0xfD8CBC8)),
+      pie_data("Blood Pressure",classify_no_of_datas["blood_pressure"]!,Color(0xffFF012C))
+    ];
 
     return GestureDetector(
       onTap: () {
