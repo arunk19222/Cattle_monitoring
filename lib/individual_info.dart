@@ -15,9 +15,9 @@ Widget individual_info(Map<String, dynamic>? datas, Color shadow_color) {
                   datas!['id'],
                   style: TextStyle(
                       fontFamily: 'Rajdhani-Regular',
-                      color: Colors.black54,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w900),
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
                 ),
               )
             ],

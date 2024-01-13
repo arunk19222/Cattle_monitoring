@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_veltech_project/bottomsheet.dart';
 
@@ -27,7 +28,7 @@ class _health_pageState extends State<health_page>
   }
 
   Future<dynamic> get_cow_data(String id) async {
-    var collection = FirebaseFirestore.instance.collection('temp');
+    var collection = FirebaseFirestore.instance.collection(FirebaseAuth.instance.currentUser!.uid);
     var docSnapshot =
         await collection.doc(id).get(); //use  null check operator after
     //firebase.instance.something!
@@ -45,7 +46,7 @@ class _health_pageState extends State<health_page>
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('temp').snapshots(),
+        stream: FirebaseFirestore.instance.collection(FirebaseAuth.instance.currentUser!.uid).snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Text("error");

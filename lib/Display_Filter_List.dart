@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_veltech_project/bottomsheet.dart';
 
@@ -30,7 +31,7 @@ class _display_filter_listState extends State<display_filter_list>
         AnimationController(vsync: this, duration: Duration(seconds: 3));
     _animationController.repeat();
     temp = FirebaseFirestore.instance
-        .collection('temp')
+        .collection(FirebaseAuth.instance.currentUser!.uid)
         .orderBy(widget.filter_type, descending: true)
         .snapshots();
   }
@@ -42,7 +43,7 @@ class _display_filter_listState extends State<display_filter_list>
   }
 
   Future<dynamic> get_cow_data(String id) async {
-    var collection = FirebaseFirestore.instance.collection('temp');
+    var collection = FirebaseFirestore.instance.collection(FirebaseAuth.instance.currentUser!.uid);
     var docSnapshot =
         await collection.doc(id).get(); //use  null check operator after
     //firebase.instance.something!

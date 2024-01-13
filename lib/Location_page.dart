@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'bottomsheet.dart';
@@ -28,7 +29,7 @@ class _location_pageState extends State<location_page>
   }
 
   Future<dynamic> get_cow_data(String id) async {
-    var collection = FirebaseFirestore.instance.collection('temp');
+    var collection = FirebaseFirestore.instance.collection(FirebaseAuth.instance.currentUser!.uid);
     var docSnapshot =
         await collection.doc(id).get(); //use  null check operator after
     //firebase.instance.something!
@@ -47,7 +48,7 @@ class _location_pageState extends State<location_page>
   Widget build(BuildContext context) {
     return StreamBuilder(
         stream: FirebaseFirestore.instance
-            .collection('temp')
+            .collection(FirebaseAuth.instance.currentUser!.uid)
             .orderBy('location', descending: true)
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
