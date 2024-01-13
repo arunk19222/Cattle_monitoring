@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_veltech_project/Home_page.dart';
 import 'package:flutter_veltech_project/LoginPage.dart';
@@ -15,7 +16,7 @@ class _zoomable_drawerState extends State<zoomable_drawer> {
   var tot_c, ab_c, mod_c, hlt_c, out_c;
 
   summa() async {
-    var data_ref = FirebaseFirestore.instance.collection('temp');
+    var data_ref = FirebaseFirestore.instance.collection(FirebaseAuth.instance.currentUser!.uid);
     await data_ref.get().then((value) {
       value.docs.forEach((datas) {
         if (datas.get('location') > 300) {

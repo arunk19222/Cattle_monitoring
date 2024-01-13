@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_veltech_project/Display_Filter_List.dart';
@@ -45,21 +46,21 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
    Map<String,int> classify_no_of_datas =  {"temp":0,"heart_beat":0,"location":0,
      "blood_pressure":0,"respiration_rate":0};
   void classifying_datas(){
-    FirebaseFirestore.instance.collection('temp').snapshots().forEach((element) { //Its always active like a listener if any changes made in firebase firestore even if the respection function called already.
+    FirebaseFirestore.instance.collection(FirebaseAuth.instance.currentUser!.uid).snapshots().forEach((element) { //Its always active like a listener if any changes made in firebase firestore even if the respection function called already.
       classify_no_of_datas =  {"temp":0,"heart_beat":0,"location":0,
         "blood_pressure":0,"respiration_rate":0};
       element.docs.forEach((element) {
         dynamic datas = element.data();
-        if((datas['temp'] < 200 && datas['temp'] >= 120)){
+        if((datas['temp'] >= 55)){
           classify_no_of_datas["temp"] = classify_no_of_datas["temp"]!+1;
         }
-        if((datas['blood_pressure'] < 200 && datas['blood_pressure'] >= 181)){
+        if((datas['blood_pressure'] >= 40)){
           classify_no_of_datas["blood_pressure"] = classify_no_of_datas["blood_pressure"]!+1;
         }
-        if((datas['heart_beat'] < 130 && datas['heart_beat'] >= 70) ){
+        if((datas['heart_beat'] >= 35) ){
           classify_no_of_datas["heart_beat"] = classify_no_of_datas["heart_beat"]!+1;
         }
-        if((datas['respiration_rate'] < 210 && datas['respiration_rate'] >= 60)){
+        if((datas['respiration_rate'] >= 60)){
           classify_no_of_datas["respiration_rate"] = classify_no_of_datas["respiration_rate"]!+1;
         }
 
@@ -90,7 +91,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   }
 
   Future<dynamic> get_cow_data() async {
-    var collection = FirebaseFirestore.instance.collection('temp');
+    var collection = FirebaseFirestore.instance.collection(FirebaseAuth.instance.currentUser!.uid);
     var docSnapshot = await collection
         .doc(search_controller.text)
         .get(); //use  null check operator after

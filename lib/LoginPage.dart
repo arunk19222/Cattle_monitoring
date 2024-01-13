@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_veltech_project/DoctorScreen.dart';
 import 'package:flutter_veltech_project/firebase_actions.dart';
 import 'package:flutter_veltech_project/zoom_drawer.dart';
 
@@ -205,9 +206,17 @@ class _Login_pageState extends State<Login_page> {
 
                                                             var error = await create_account(name:s_name.text,email: s_email.text, password:s_pass.text);
                                                             if(error==null){
-                                                              FirebaseFirestore.instance.collection("Users").doc(FirebaseAuth.instance.currentUser!.uid).set({"name":s_name.text.toUpperCase()});
-                                                              var set_data = FirebaseFirestore.instance.collection(FirebaseAuth.instance.currentUser!.uid);
-                                                              set_data.doc("COW").set({"null":0});
+                                                              FirebaseFirestore.instance.collection("Users").doc(FirebaseAuth.instance.currentUser!.uid).set({"gmail":s_email.text,"name":s_name.text.toUpperCase(),"role":"normal"});
+                                                              //var set_data = FirebaseFirestore.instance.collection(FirebaseAuth.instance.currentUser!.uid);
+                                                              // for(int i=1;i<51;i++){
+                                                              //   set_data.doc("COW${i}").set({
+                                                              //     'temp': (i*3-i*1.6).roundToDouble(),
+                                                              //     'blood_pressure': (i*3-i*2),
+                                                              //     'location': (i*8),
+                                                              //     'respiration_rate': (i+i*0.5).roundToDouble(),
+                                                              //     'heart_beat': (i*2-i)
+                                                              //   });
+                                                              // }
                                                               ScaffoldMessenger.of(context).showSnackBar( SnackBar(
                                                                 backgroundColor: Colors.black,
                                                                 content: Text("Account Created Successfully",style: TextStyle(color: Colors.white),),));
@@ -409,7 +418,14 @@ class _Login_pageState extends State<Login_page> {
                                                           });
                                                           var error = await signIn_account(email: l_email.text, password:l_pass.text);
                                                           if(error==null){
-                                                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>zoomable_drawer()));
+                                                            var role = "";
+                                                            var snapshot = await FirebaseFirestore.instance.collection("Users").doc(FirebaseAuth.instance.currentUser!.uid).snapshots().first;
+                                                            role = snapshot.data()!["role"];
+                                                            if(role=="normal"){
+                                                               Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>zoomable_drawer()));
+                                                             }else if(role=="doctor"){
+                                                               Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>doctor()));
+                                                             }
                                                           }else{
                                                             //snackbar
                                                             ScaffoldMessenger.of(context).showSnackBar( SnackBar(

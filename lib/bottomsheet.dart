@@ -70,18 +70,18 @@ class _bottom_sheet_classState extends State<bottom_sheet_class> {
               begin: Alignment.topRight, end: Alignment.bottomRight),
           weight: 1),
     ]).animate(widget.animate_controller);
-    if ((datas['temp'] < 200 && datas['temp'] >= 120) ||
-        (datas['blood_pressure'] < 200 && datas['blood_pressure'] >= 181) ||
-        (datas['heart_beat'] < 130 && datas['heart_beat'] >= 70) ||
-        (datas['respiration_rate'] < 210 && datas['respiration_rate'] >= 60) ||
+    if ((datas['temp'] >= 55) ||
+        (datas['blood_pressure'] >= 40) ||
+        (datas['heart_beat'] >= 35) ||
+        (datas['respiration_rate'] >= 60) ||
         (datas['injury'] != null)) {
       indication_color = Color(0xffA31805);
     } else if (datas['location'] > 300) {
       indication_color = Color(0xffE1DE09);
-    } else if ((datas['temp'] < 120 && datas['temp'] >= 70) ||
-        (datas['blood_pressure'] < 181 && datas['blood_pressure'] >= 165) ||
-        (datas['heart_beat'] < 70 && datas['heart_beat'] >= 45) ||
-        (datas['respiration_rate'] < 60 && datas['respiration_rate'] >= 40)) {
+    } else if ((datas['temp'] < 55 && datas['temp'] >=30) ||
+        (datas['blood_pressure'] < 40 && datas['blood_pressure'] >= 20) ||
+        (datas['heart_beat'] < 35 && datas['heart_beat'] >= 25) ||
+        (datas['respiration_rate'] < 60 && datas['respiration_rate'] >= 30)) {
       indication_color = Color(0xffED8715);
     } else {
       indication_color = Color(0xff009e78);

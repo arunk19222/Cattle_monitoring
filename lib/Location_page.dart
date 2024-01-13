@@ -61,7 +61,7 @@ class _location_pageState extends State<location_page>
               itemCount: snapshot.requireData.size,
               itemBuilder: (BuildContext context, int index) {
                 try {
-                  var data = snapshot.requireData.docs[index].get('location');
+                  int data = snapshot.requireData.docs[index].get('location');
                   if (data > 300) {
                     return ListTile(
                       leading: Icon(Icons.pets),
@@ -72,8 +72,9 @@ class _location_pageState extends State<location_page>
                             fontSize: 22,
                             fontFamily: 'Rajdhani-Regular'),
                       ),
-                      subtitle: Text("Outlier : ${data - 300}",
+                      subtitle: Text("Outlier : ${data}",
                           style: TextStyle(
+                            color:  Color(0xffE1DE09).withOpacity(0.8),
                               fontSize: 18,
                               fontWeight: FontWeight.w800,
                               fontFamily: 'Rajdhani-Regular')),

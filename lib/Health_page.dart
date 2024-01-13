@@ -70,6 +70,7 @@ class _health_pageState extends State<health_page>
                       ),
                       subtitle: Text("Injury  : ${data}",
                           style: TextStyle(
+                            color: Color(0xffA31805),
                               fontWeight: FontWeight.w800,
                               fontSize: 18,
                               fontFamily: 'Rajdhani-Regular')),
