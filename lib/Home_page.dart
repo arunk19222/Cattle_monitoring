@@ -16,7 +16,6 @@ class graph_data{
   final y;
   graph_data({required this.x,required this.y}){
   }
-
 }
 class pie_data{
   final String x;
@@ -449,7 +448,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             ),
             Icon(Icons.local_hospital, color: Colors.white),
             Icon(Icons.location_off, color: Colors.white),
-            Icon(Icons.call, color: Colors.white)
+            Icon(Icons.live_help, color: Colors.white)
           ],
           onTap: (i) {
             setState(() {
@@ -468,7 +467,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         break;
       case 1:
         current_scaffold_body_widget = Health_Screen();
-
         break;
       case 2:
         current_scaffold_body_widget = Location_Screen();

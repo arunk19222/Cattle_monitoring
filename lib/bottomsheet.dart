@@ -127,7 +127,7 @@ class _bottom_sheet_classState extends State<bottom_sheet_class> {
                 padding: EdgeInsets.all(20),
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.width / 1.2,
-                child: Center(child: flag?individual_info(datas, indication_color):prescription_class()),
+                child: Center(child: flag?individual_info(datas, indication_color):prescription_class(datas:datas)),
                 decoration: BoxDecoration(
                     color: Color(0xff1e1f1d), //Color(0xffC0C0C0),
                     borderRadius: BorderRadius.only(
